@@ -442,4 +442,218 @@
 
 
 
+
+(get-in body [:transactionInfo :userName])
+
+{:transaction-info
+ {:user-name {...}}}
+
+
+
+{:global-vars {*warn-on-reflection* true
+               *assert* true
+               *print-meta* false}}
+
+
+{:user
+ {:global-vars {*warn-on-reflection* true
+                *assert* true
+                *print-meta* false}}}
+
+
+;; lein uberjar > uberjar.log
+;; ! grep -i 'Reflection warning' uberjar.log
+
+
+
+(defn upsert-user! [db fields]
+  ...)
+
+
+(defn create-user [db fields]
+  ...)
+
+(defn delete-user [db fields]
+  ...)
+
+(defn update-user [db fields]
+  ...)
+
+
+(defn get-last-task [db client-id]
+  ...)
+
+
+(defn orders->total [orders]
+  ...)
+
+
+(defn datetime->date [dt]
+  ...)
+
+
+(defn orders+clients->total [orders clients]
+  ...)
+
+
+(defn is-active? [user]
+  ...)
+
+
+(let [active? (is-active? user)]
+  ...)
+
+(let [?active (is-active? user)]
+  ...)
+
+
+(defn process-stats [data]
+  ...)
+
+
+(defn process-stats [orders users]
+  ...)
+
+(process-stats [{:order-id 1 ...} {:order-id 2 ...}]
+               [{:user-id 10 ...} {:user-id 20 ...}])
+
+
+
+(defn process-users [id->user]
+  ...)
+
+(process-users {1 {:user-id 1 ...},
+                2 {:user-id 2 ...}})
+
+
+(def verb->path->response
+  {:get {"/" {:status 200 :body ...}
+         "/help" {:status 200 :body ...}}
+   :post {"/users" {:status 400 :body ...}}})
+
+
+(with-http-server verb->path->response
+  ...)
+
+
+(defn error-handler [e]
+  ...)
+
+(connect db {:fn-on-error error-handler})
+
+
+(defn process-events [vec-events int-limit str-notice]
+  ...)
+
+
+(defn process-user [u p]
+  ...)
+
+(defn process-user [user profile]
+  ...)
+
+(def user {:name "Ivan"})
+
+(let [{:keys [name]} user]
+  (println name))
+
+(let [{:keys [full-name]} user]
+  (println name))
+;; #function[clojure.core/name]
+
+
+(let [{user-name :name} user]
+  (println name))
+
+
+(defn some-function [a b]
+  (with-some-macro {:foo 42}
+    (let [x (+ a b)]
+      (dotimes [_ 99]
+        (println "hello")))))
+
+
+(calling-a-func-with-args "arg one"
+  {:some {:nested "map"}}
+  some-variable
+  [1 2 3]
+  true)
+
+
+(defn some-long-function [a b c d]
+  (let [calc-this
+        (some-vast-function a c)
+
+        calc-that
+        (some-another-function c d)
+
+        users
+        (some-massive-query-to-db calc-that)
+
+        events
+        (some-http-request ...)]
+                                  ;; <- !!!
+    (for [user users]
+      ...)))
+
+
+(defn get-by-id
+  ([table id]
+   (get-by-id table id :id))
+
+  ([table id pk-name]
+   (jdbc/execute ...)))
+
+
+
+
+(defn error!
+
+  ([message]
+   (throw (ex-info message {})))
+
+  ([message data]
+   (throw (ex-info message data)))
+
+  ([message data cause]
+   (throw (ex-info message data cause))))
+
+
+(defn error!
+  ([message]
+   (throw (ex-info message {})))
+  ([message data]
+   (throw (ex-info message data)))
+  ([message data cause]
+   (throw (ex-info message data cause))))
+
+
+
+
+(defn some-complex-func
+  "This function does this and that..."
+  [users limit some-arg]
+  {:pre [(seq users) (int? limit)]
+   :post [(map? %)]}
+                     ;; <- !!!
+  (let [events
+        (get-events ...)]
+    ...))
+
+
+
+(doseq [item items
+        :let [{:keys [id title]} item]
+        :when (some? id)]
+                           ;; <- !!!
+  (process-item ...))
+
+
+
+
+
+
+
+
+
 #_ _
