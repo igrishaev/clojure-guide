@@ -650,6 +650,185 @@
 
 
 
+(defn create-user []
+  ...)
+
+
+(defn udpate-user []
+  ...)
+
+
+(defn get-user []
+  ...)
+
+
+
+(defn some-func [arg1 arg2]
+  (let [x 1
+        y 2]
+              ;; that's
+              ;; too much space
+    (println ...)))
+
+
+
+{:name    "John Smith"
+ :active? true
+ :email   "john@test.com"}
+
+
+{:name             "John Smith"
+ :id               9
+ :active?          true
+ :email            "john@test.com"
+ :number-of-orders 232}
+
+{:id      9
+ :name    "John Smith"
+ :email   "john@test.com"
+ :active? true
+
+ :another-long-field {...}
+ :number-of-orders   232}
+
+
+
+
+(let [id                 (:id item)
+      accounts-to-delete (jdbc/query db ["select ..." 42])
+      profiles           (rest/get-pending-profiles api "/...")]
+  ...)
+
+
+
+(let [id
+      (:id item)
+
+      accounts-to-delete
+      (jdbc/query db ["select ..." 42])
+
+      profiles
+      (rest/get-pending-profiles api "/...")]
+
+  (process-all-of-that id
+                       accounts-to-delete
+                       profiles))
+
+
+
+
+(cond
+  (check-this? ...)
+  (process-that ...)
+
+  (now-check-that? ...)
+  (let [a 1]
+    (with-transaction [tx db]
+      (jdbc/execute tx ...)))
+
+  (one-more-case? ...)
+  (something ...)
+
+  :else
+  (default-case ...))
+
+(cond
+  (check-this? ...) (process-that ...)
+  (now-check-that? ...) (let [a 1]
+                          (with-transaction [tx db]
+                            (jdbc/execute tx ...)))
+  (one-more-case? ...) (something ...)
+  :else (default-case ...))
+
+
+#_{:style/indent 2}
+
+(defmacro then
+  {:style/indent 1}
+  [value [bind] & body]
+  `(let [~bind ~value]
+     ~@body))
+
+(defmacro then
+  {:style/indent 2}
+  ...)
+
+(then 1 [x]
+  (inc x))
+
+(-> 1 (then [x] (inc x)))
+
+(-> 1
+    (then [x]
+      (inc x))
+    (then [x]
+      (* x x)))
+
+
+(ns project.codec
+  (:import
+   java.text.Normalizer
+   java.text.Normalizer$Form
+   java.security.MessageDigest
+   java.util.Base64))
+
+
+(defn b64-decode ^bytes [^bytes input]
+  (.decode (Base64/getDecoder) input))
+
+
+(defn b64-encode ^bytes [^bytes input]
+  (.encode (Base64/getEncoder) input))
+
+
+(defn normalize-nfc [^String string]
+  (Normalizer/normalize string Normalizer$Form/NFC))
+
+
+(defprotocol IStorage
+  (get-this-field [this])
+  (get-another-field [this])
+  (get-item-by-idx [this idx]))
+
+
+(deftype Storage
+  [map1 map2 map3]
+
+  IStorage
+
+  (get-this-field [this]
+    (let [chunk1 (get-in map1 [...])
+          chunk2 (get-in map2 [:foo (:id chunk1)])
+          chunk3 (get-something-from map3)
+          ...]
+      {:some "result"}))
+
+  (get-item-by-idx [this idx]
+    {:id (get-in map1 some-path)
+     :title (get-in map2 another-path)}))
+
+
+(defn make-storage [map1 map2 map3]
+  (new Storage map1 map2 map3))
+
+
+(let [storage
+      (storage/make-storage m1 m2 m3)
+
+      this-field
+      (storage/get-this-field storage)
+
+      item
+      (storage/get-item-by-idx storage 9)]
+
+  ...)
+
+
+(defn process-something [^Storage storage]
+  (let [item
+        (storage/get-item-by-idx storage 9)]
+    ...))
+
 
 
 
