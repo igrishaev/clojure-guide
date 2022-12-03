@@ -649,6 +649,13 @@
   (process-item ...))
 
 
+(ns project.core
+  (:require
+   [project.codec :as codec]))
+
+(codec/b64-decode (some-bytes ...))
+
+
 
 (defn create-user []
   ...)
