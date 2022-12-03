@@ -831,6 +831,260 @@
 
 
 
+(defn -main [& args]
+  (let [config
+        (read-config ...)]
+    (initiate-sytem config)
+    (start-system)
+    (initiate-cronjobs)
+    (initiate-something-else)))
+
+
+(defn fixture-system [t]
+  (initiate-sytem config {:drop [:cronjob]})
+  (start-system)
+  (t)
+  (stop-system))
+
+
+(defn init-system [config]
+  (component/system-map
+   :database (db/make-database (:db config))
+   :redis (redis/make-redis (:redis config))
+   :sendmail (component/using (sendmail/sendmail
+                               (:sendmail config))
+                              [:database :redis])
+   ...))
+
+
+
+(def component-map
+  {:database db/make-database
+   :redis    redis/make-redis
+   :sendmail sendmail/sendmail})
+
+
+(def using-map
+  {:sendmail [:database :redis]})
+
+
+
+(let [what-is-it?
+      (-> 42                  ;; int id
+          db/get-user-by-id   ;; a map
+          :password           ;; a string field
+          .getBytes           ;; byte array
+          codec/b64-encode    ;; byte array
+          String.)])          ;; string
+
+
+(defn encode-password ^String [^String password]
+  (-> password
+      (.getBytes)
+      (codec/b64-encode)
+      (String.)))
+
+
+(let [password
+      (:password
+       (db/get-user-by-id 42))
+
+      password-encoded
+      (encode-password password)]
+
+  ...)
+
+
+
+
+(->> entity :info :companies
+     (filter #(= some-id (:guid %)))
+     first)
+
+
+(->> (get-in event [:some-field :items])
+     (map :amount)
+     (filter (every-pred (complement nil?) int?))
+     (reduce +))
+
+
+(->> nodes
+     (map #(some-function! entity-id user %))
+     (doall)
+     (some.ns/process! entity-id)
+     (process-data! task-id resource-type end-cursor))
+
+
+
+(vec
+ (for [item items]
+   ...))
+
+
+(filter #{:active :inactive} statuses)
+
+
+
+(reduce
+ (fn [acc item]
+   (conj acc (:field item)))
+ []
+ items)
+
+
+(persistent!
+ (reduce
+  (fn [acc! item]
+    (conj! acc! (:field item)))
+  (transient [])
+  items))
+
+
+(loop [i 0
+       acc []]
+  (if (= i limit)
+    acc
+    (reduce (inc 0) (conj acc (get-item)))))
+
+
+(loop [i 0
+       acc! (transient [])]
+  (if (= i limit)
+    (persistent! acc!)
+    (reduce (inc 0) (conj! acc! (get-item)))))
+
+
+(mapv :user-name coll-users)
+
+
+(vec (for [item items]
+       (get-something ...)))
+
+
+;; never vec/doall this
+(for [file (s3/get-files-seq ...)]
+  (process-file file))
+
+
+(s/fdef process-user
+  :args (s/cat :user ::user
+               :profile ::profile
+               :flag? boolean?)
+  :ret map?)
+
+(defn process-user [user profile flag?]
+  ...)
+
+
+
+(defrecord SomeComponent
+    [host port state on-error])
+
+
+(defn make-component [host port & {:keys [on-error]}]
+  (map->SomeComponent {:host host
+                       :port port
+                       :on-error on-error}))
+
+
+(defrecord SomeComponent
+    [;; init
+     host port on-error
+
+     ;; runtime
+     state
+
+     ;; deps
+     cache db])
+
+
+;; --------------------------
+;; -------- Handlers --------
+;; --------------------------
+
+
+;; <><><><><><><><><><><><><>
+;; <><><><> Routes <><><><><>
+;; <><><><><><><><><><><><><>
+
+
+(defn some-function [a b c]
+  ...)
+
+;; The old version of that function
+;; (defn some-function [a b c d]
+;;   ...)
+
+
+(comment
+
+  (def -db
+    (jdbc/connect "localhost" 5432))
+
+  (def -row
+    (jdbc/execute -db "select 1")))
+
+
+
+(deftest test-user-auth-ok
+  ...)
+
+(deftest test-user-auth-fails
+  ...)
+
+
+(defn fixture-prepare-db [t]
+  (insert-the-data *db*)
+  (t)
+  (delete-the-data *db*))
+
+
+
+(deftest ^:unit test-some-pure-function
+  ...)
+
+
+(deftest ^:integration test-some-db-logic
+  ...)
+
+
+(ns ^:unit project.pure-function-tests
+  )
+
+(ns ^:integration project.system-test
+  )
+
+
+(defmacro with-local-http
+  [[port verb->path->response] & body]
+  `(let [handler#
+         (fn [request]
+           (get-response-from-mapping))
+
+         server#
+         (jetty/run-jetty handler#)]
+
+     (try
+       ~@body
+       (finally
+         (.close server#)))))
+
+
+
+(deftest test-some-api
+  (with-local-http [8080 {:get {"/v1/users" {...}}}]
+    (run-function-that-calls-the-api ...)))
+
+
+
+{:dependencies [[amazonica "0.3.156"
+                :exclusions [com.amazonaws/aws-java-sdk
+                             com.amazonaws/amazon-kinesis-client
+                             com.amazonaws/dynamodb-streams-kinesis-adapter]]
+               [com.amazonaws/aws-java-sdk-core "1.11.968"]
+               [com.amazonaws/aws-java-sdk-s3 "1.11.968"]]}
+
+
 
 
 
